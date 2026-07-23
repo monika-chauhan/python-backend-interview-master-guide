@@ -1,0 +1,350 @@
+# System Design Interview Master Guide
+
+# Module 3: Database Design (71–120)
+
+# Topic: SQL Database Design Fundamentals
+
+> **Interview Focus:** Senior engineers are expected to understand database selection, schema design, indexing, scaling strategies, query optimization, and production trade-offs.
+
+---
+
+# 71. When to Choose SQL Database?
+
+## Definition
+
+SQL databases are relational databases that store data in structured tables with relationships.
+
+Examples:
+
+- PostgreSQL
+- MySQL
+- Oracle
+- SQL Server
+
+---
+
+# SQL Database Characteristics
+
+## 1. Structured Schema
+
+Data follows predefined schema.
+
+Example:
+Users Table
+
+id
+name
+email
+created_at
+
+
+---
+
+## 2. ACID Transactions
+
+SQL databases provide:
+
+- Atomicity
+- Consistency
+- Isolation
+- Durability
+
+---
+
+## 3. Strong Relationships
+
+Supports:
+
+- Primary keys
+- Foreign keys
+- Joins
+
+---
+
+# Choose SQL When:
+
+---
+
+## 1. Data Has Strong Relationships
+
+Example:
+
+Banking system:
+Customer
+
+|
+
+Account
+
+|
+
+Transaction
+
+
+---
+
+## 2. Need Strong Consistency
+
+Examples:
+
+- Banking
+- Payments
+- Inventory
+
+---
+
+## 3. Complex Queries Required
+
+Examples:
+
+```sql
+SELECT
+customer,
+SUM(order_amount)
+FROM orders
+GROUP BY customer;
+
+4. Transaction Support Needed
+
+Example:
+
+Money transfer:
+
+Debit Account A
+
++
+
+Credit Account B
+
+
+Both operations must succeed together.
+SQL Use Cases
+
+
+| System          | Database         |
+| --------------- | ---------------- |
+| Banking         | PostgreSQL       |
+| E-commerce      | MySQL/PostgreSQL |
+| ERP             | Oracle           |
+| CRM             | SQL Server       |
+| Payment Systems | PostgreSQL       |
+
+
+When NOT to Choose SQL?
+
+Consider NoSQL when:
+
+Massive Scale
+
+Example:
+
+Billions of events.
+
+Flexible Schema
+
+Example:
+
+Product catalog:
+
+When NOT to Choose SQL?
+
+Consider NoSQL when:
+
+Massive Scale
+
+Example:
+
+Billions of events.
+
+Flexible Schema
+
+Example:
+
+Product catalog:
+
+
+High Write Throughput
+
+Example:
+
+IoT events.
+
+Interview Answer
+
+SQL databases are preferred when data relationships, transactions, consistency, and complex queries are important.
+
+72. Database Normalization
+Definition
+
+Normalization organizes data to reduce duplication and improve consistency.
+
+Problem Without Normalization
+
+Example:
+
+Orders Table
+Order_ID
+Customer_Name
+Customer_Address
+Product_Name
+
+Duplicate customer data.
+
+Normalized Design
+Customer Table
+
+Customer
+
+id
+name
+address
+
+Order Table
+Order
+
+id
+customer_id
+product_id
+
+Relationship:
+
+Customer
+
+   |
+
+Orders
+
+Normalization Levels
+
+First Normal Form (1NF)
+
+Rules:
+
+Atomic values
+No repeating groups
+
+Bad:
+
+Phone:
+
+1111,2222,3333
+
+
+Good:
+
+Customer Phone Table
+customer_id
+phone
+
+Second Normal Form (2NF)
+
+Requirements:
+
+Must be in 1NF
+No partial dependency
+
+Example:
+Composite key:
+
+(order_id, product_id)
+
+
+Product information should not depend only on:
+
+product_id
+
+Third Normal Form (3NF)
+
+Requirement:
+
+No transitive dependency.
+
+Example:
+
+Bad:
+Employee
+
+employee_id
+department_id
+department_name
+
+Better:
+
+Employee
+
+employee_id
+department_id
+
+
+Department
+
+department_id
+department_name
+
+Advantages of Normalization
+Reduces duplicate data
+Improves consistency
+Easier updates
+Better integrity
+## Disadvantages
+More joins
+Query complexi
+Slower reads
+
+73. Database Denormalization
+Definition
+
+Adding duplicate data intentionally to improve read performance.
+Example:
+
+Normalized:
+Orders
+
+order_id
+customer_id
+
+
+Customer
+
+customer_id
+name
+Requires JOIN.
+
+Denormalized:
+
+Orders
+
+order_id
+customer_id
+customer_name
+No JOIN required.
+
+Why Denormalize?
+
+When:
+
+Read traffic is high
+Joins are expensive
+Performance is critical
+Examples
+Social Media Feed
+Store:
+
+Post
+
+post_id
+content
+user_name
+profile_image
+
+instead of joining user table.
+
+Trade-off
+
+| Normalization      | Denormalization  |
+| ------------------ | ---------------- |
+| Less duplication   | More duplication |
+| Better consistency | Faster reads     |
+| More joins         | Less joins       |
+
+Normalization improves data integrity, while denormalization improves read performance by reducing joins
